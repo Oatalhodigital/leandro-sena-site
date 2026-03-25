@@ -598,10 +598,19 @@ header.nav-open .nav-toggle::after {
     height: 400px;
     max-width: 440px;
     margin: 0 auto;
+    width: 100%;
+    --photo-size: 440px;
 }
 
 .vitral-bg {
-    display: none;
+    position: absolute;
+    inset: 0;
+    background-image: var(--marketing-photo);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.14;
+    z-index: 1;
+    border-radius: 18px;
 }
 
 .vitral-piece {
@@ -625,7 +634,7 @@ header.nav-open .nav-toggle::after {
     top: 50%;
     transform: translate(-50%, -50%) rotate(-45deg);
     background-image: var(--marketing-photo);
-    background-size: 520px 520px;
+    background-size: var(--photo-size, 440px) var(--photo-size, 440px);
     background-position: var(--vx, 50%) var(--vy, 50%);
     background-repeat: no-repeat;
 }
@@ -709,6 +718,14 @@ header.nav-open .nav-toggle::after {
     top: 50%;
     margin-left: -32px;
     margin-top: 125px;
+}
+
+.vitral-edge-4 {
+    /* Top-edge centered piece to complete the image collage */
+    left: 50%;
+    top: 50%;
+    margin-left: -32px;
+    margin-top: -125px;
 }
 
 /* CTA strip */
