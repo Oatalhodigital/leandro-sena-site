@@ -1,4 +1,20 @@
+// Inicialização do Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyB07tis8vUZzDlaM2GDiROn-xmxXgHdVtQ",
+  authDomain: "leandro-sena-web.firebaseapp.com",
+  projectId: "leandro-sena-web",
+  storageBucket: "leandro-sena-web.firebasestorage.app",
+  messagingSenderId: "125091906843",
+  appId: "1:125091906843:web:4ccd0c80f44487ab417fbe",
+  measurementId: "G-KRQ7CRLCSM"
+};
+
+// Inicializa o Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 (function () {
+    // FAQ Accordion
     document.querySelectorAll(".faq-question").forEach(function (button) {
         button.addEventListener("click", function () {
             var item = button.closest(".faq-item");
@@ -12,6 +28,7 @@
         });
     });
 
+    // Reveal Animation
     var observer = new IntersectionObserver(
         function (entries) {
             entries.forEach(function (entry) {
@@ -27,6 +44,7 @@
         observer.observe(el);
     });
 
+    // Mobile Navigation
     var header = document.querySelector("header");
     var toggle = document.querySelector(".nav-toggle");
     var navLinks = document.querySelector(".nav-links");
@@ -45,75 +63,159 @@
         });
     }
 
+    // Footer Year
     var y = document.getElementById("year");
     if (y) {
         y.textContent = String(new Date().getFullYear());
     }
 
+    // Formulário de Solicitação de Projeto
     var formOrcamento = document.getElementById("form-orcamento");
     var formSuccess = document.getElementById("form-success");
+    var btnReuniao = document.getElementById("btn-reuniao");
+
     if (formOrcamento && formSuccess) {
         formOrcamento.addEventListener("submit", function (e) {
             e.preventDefault();
+            
             if (!formOrcamento.checkValidity()) {
                 formOrcamento.reportValidity();
                 return;
             }
 
+            // Desabilita o botão para evitar envios duplicados
+            var submitBtn = formOrcamento.querySelector('button[type="submit"]');
+            var originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Enviando...";
+
             var formData = new FormData(formOrcamento);
             var nome = String(formData.get("nome") || "").trim();
             var email = String(formData.get("email") || "").trim();
-            var objetivoKey = String(formData.get("objetivo") || "").trim();
-            var mensagemCliente = String(formData.get("mensagem") || "").trim();
+            var whatsapp = String(formData.get("whatsapp") || "").trim();
+            var descricao = String(formData.get("descricao") || "").trim();
 
-            var objetivoMap = {
-                site: "Site institucional",
-                landing: "Landing page (vendas / leads)",
-                loja: "Loja virtual",
-                blog: "Portal / blog",
-                outro: "Outro"
-            };
-            var objetivoLabel = objetivoMap[objetivoKey] || objetivoKey || "Não informado";
-
-            var destinoWhatsapp = "5531982606442";
-            var destinoEmail = "leandros2kat@gmail.com";
-            var destinoLinkedIn = "https://www.linkedin.com/in/leandro-h-p-sena/";
-
-            var payload = "Olá! Recebi uma solicitação de orçamento pelo site.\n\n" +
-                "Nome: " + nome + "\n" +
-                "E-mail: " + email + "\n" +
-                "Objetivo: " + objetivoLabel + "\n\n" +
-                "Mensagem do cliente:\n" + mensagemCliente + "\n\n" +
-                "Link do formulário: " + String(window.location.href || "") + "\n";
-
-            var subject = "Solicitação de orçamento - " + (nome || "Cliente");
-
-            // Abre as notificações (WhatsApp + e-mail). No LinkedIn, copiamos a mensagem
-            // para que você cole na conversa/DM.
-            try {
-                var waUrl = "https://wa.me/" + destinoWhatsapp + "?text=" + encodeURIComponent(payload);
-                window.open(waUrl, "_blank", "noopener,noreferrer");
-            } catch (err) { }
-
-            try {
-                var mailtoUrl = "mailto:" + destinoEmail +
-                    "?subject=" + encodeURIComponent(subject) +
-                    "&body=" + encodeURIComponent(payload);
-                window.open(mailtoUrl, "_blank", "noopener,noreferrer");
-            } catch (err) { }
-
-            try {
-                // Tenta copiar para colar no LinkedIn (muitas contas bloqueiam pré-preenchimento via URL).
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(payload).catch(function () { });
-                }
-                window.open(destinoLinkedIn, "_blank", "noopener,noreferrer");
-            } catch (err) { }
-
-            formSuccess.hidden = false;
-            formOrcamento.reset();
-            formSuccess.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            formSuccess.focus({ preventScroll: true });
+            // Salvar no Firebase
+            salvarLeadFirebase(nome, email, whatsapp, descricao)
+                .then(function() {
+                    // Enviar WhatsApp para Leandro
+                    enviarWhatsAppLeandro(nome, whatsapp, descricao);
+                    
+                    // Mostrar mensagem de sucesso
+                    formSuccess.hidden = false;
+                    formOrcamento.reset();
+                    formSuccess.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                    formSuccess.focus({ preventScroll: true });
+                })
+                .catch(function(error) {
+                    console.error("Erro ao salvar lead:", error);
+                    alert("Ocorreu um erro ao enviar sua solicitação. Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp.");
+                })
+                .finally(function() {
+                    // Reabilita o botão
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                });
         });
     }
+
+    // Configurar link de reunião
+    if (btnReuniao) {
+        btnReuniao.addEventListener("click", function(e) {
+            e.preventDefault();
+            // Link fixo do Google Meet (você pode alterar este link)
+            var meetingLink = "https://meet.google.com/xxx-xxxx-xxx";
+            window.open(meetingLink, "_blank");
+        });
+    }
+
+    // Função para salvar lead no Firebase
+    function salvarLeadFirebase(nome, email, whatsapp, descricao) {
+        var leadData = {
+            nome: nome,
+            email: email,
+            whatsapp: whatsapp,
+            descricao: descricao,
+            dataCriacao: firebase.firestore.FieldValue.serverTimestamp(),
+            status: "novo",
+            origem: "site_leandro_sena"
+        };
+
+        return db.collection("leads_projetos").add(leadData)
+            .then(function(docRef) {
+                console.log("Lead salvo com ID: ", docRef.id);
+                return docRef;
+            })
+            .catch(function(error) {
+                console.error("Erro ao salvar lead: ", error);
+                throw error;
+            });
+    }
+
+    // Função para enviar WhatsApp para Leandro
+    function enviarWhatsAppLeandro(nome, whatsapp, descricao) {
+        var mensagem = "🚀 *Novo Lead Recebido!*\n\n" +
+            "👤 *Nome:* " + nome + "\n" +
+            "📱 *WhatsApp:* " + whatsapp + "\n" +
+            "📝 *Projeto:* " + descricao + "\n\n" +
+            "🔗 *Ação Necessária:* Entrar em contato em até 2 horas\n" +
+            "📅 *Próximo Passo:* Agendar reunião de diagnóstico";
+
+        var whatsappUrl = "https://wa.me/5531982606442?text=" + encodeURIComponent(mensagem);
+        
+        // Abre o WhatsApp em uma nova aba
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    }
+
+    // Validação de telefone (formato brasileiro)
+    var whatsappInput = document.querySelector('input[name="whatsapp"]');
+    if (whatsappInput) {
+        whatsappInput.addEventListener('input', function(e) {
+            var value = e.target.value.replace(/\D/g, '');
+            var formattedValue = '';
+            
+            if (value.length <= 11) {
+                if (value.length >= 2) {
+                    formattedValue = '(' + value.substring(0, 2);
+                }
+                if (value.length >= 3) {
+                    formattedValue += ') ' + value.substring(2, Math.min(7, value.length));
+                }
+                if (value.length >= 7) {
+                    formattedValue += '-' + value.substring(7, Math.min(11, value.length));
+                }
+                if (value.length > 11) {
+                    formattedValue += value.substring(11);
+                }
+            }
+            
+            e.target.value = formattedValue;
+        });
+    }
+
+    // Otimização de performance: Lazy loading para imagens
+    if ('IntersectionObserver' in window) {
+        var imageObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('img[data-src]').forEach(function(img) {
+            imageObserver.observe(img);
+        });
+    }
+
+    // Adicionar indicador de carregamento para melhor UX
+    window.addEventListener('load', function() {
+        document.body.classList.add('loaded');
+    });
+
 })();
