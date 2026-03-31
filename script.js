@@ -102,6 +102,9 @@ const db = firebase.firestore();
                     // Enviar WhatsApp para Leandro
                     enviarWhatsAppLeandro(nome, whatsapp, objetivo, descricao);
                     
+                    // Enviar mensagem de confirmação para o cliente
+                    enviarWhatsAppCliente(nome, whatsapp);
+                    
                     // Personalizar mensagem de sucesso com nome do cliente
                     var successMessage = document.getElementById('success-message');
                     if (successMessage) {
@@ -186,6 +189,30 @@ const db = firebase.firestore();
         
         // Abre o WhatsApp em uma nova aba
         window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    }
+
+    // Função para enviar mensagem de confirmação para o cliente
+    function enviarWhatsAppCliente(nome, whatsapp) {
+        // Limpar o número para incluir apenas dígitos
+        var numeroLimpo = whatsapp.replace(/\D/g, '');
+        
+        // Garantir que tenha o código do país
+        if (numeroLimpo.length === 11) {
+            numeroLimpo = '55' + numeroLimpo;
+        }
+        
+        var mensagemCliente = "✅ *Solicitação enviada com sucesso!*\n\n" +
+            "Olá, " + nome + "! Recebemos seu pedido de projeto. O próximo passo é nossa Reunião de Diagnóstico.\n\n" +
+            "🔗 *ENTRE NA SALA DE REUNIÃO AGORA:* https://meet.google.com/abc-defg-hij\n\n" +
+            "Se preferir, aguarde que entrarei em contato em breve.\n\n" +
+            "Obrigado!";
+
+        var whatsappUrlCliente = "https://wa.me/" + numeroLimpo + "?text=" + encodeURIComponent(mensagemCliente);
+        
+        // Abre o WhatsApp do cliente em uma nova aba
+        window.open(whatsappUrlCliente, "_blank", "noopener,noreferrer");
+        
+        console.log('📱 Mensagem enviada para o cliente:', nome, 'no número:', numeroLimpo);
     }
 
     // Validação de telefone (formato brasileiro) - Versão simplificada

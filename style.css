@@ -1205,11 +1205,8 @@ header.nav-open .nav-toggle::after {
     border: 2px solid rgba(110, 184, 255, 0.5);
     border-radius: 16px;
     padding: 32px 28px;
-    margin-bottom: 24px;
-    color: var(--white);
-    font-size: 1rem;
-    line-height: 1.6;
     text-align: center;
+    box-shadow: 0 16px 48px rgba(0, 0, 139, 0.15);
     backdrop-filter: blur(10px);
 }
 
@@ -1223,13 +1220,18 @@ header.nav-open .nav-toggle::after {
 .form-success p {
     margin-bottom: 24px;
     opacity: 0.95;
+    color: #00008B;
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.6;
 }
 
 .success-actions {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     align-items: center;
+    margin-top: 8px;
 }
 
 .btn-whatsapp-success {
@@ -1237,21 +1239,23 @@ header.nav-open .nav-toggle::after {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 14px 28px;
+    padding: 16px 32px;
     border-radius: 999px;
     background: #25d366;
     color: var(--white);
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1rem;
     text-decoration: none;
     transition: all 0.3s;
-    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
-    min-width: 200px;
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.35);
+    min-width: 280px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .btn-whatsapp-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(37, 211, 102, 0.45);
     filter: brightness(1.05);
 }
 
@@ -1260,21 +1264,23 @@ header.nav-open .nav-toggle::after {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 14px 28px;
+    padding: 16px 32px;
     border-radius: 999px;
     background: linear-gradient(180deg, var(--sky-soft) 0%, var(--sky) 100%);
     color: var(--navy);
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 1rem;
     text-decoration: none;
     transition: all 0.3s;
-    box-shadow: 0 6px 20px rgba(77, 163, 255, 0.3);
-    min-width: 200px;
+    box-shadow: 0 8px 25px rgba(77, 163, 255, 0.35);
+    min-width: 280px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .btn-meeting-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(77, 163, 255, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(77, 163, 255, 0.45);
     filter: brightness(1.05);
 }
 
