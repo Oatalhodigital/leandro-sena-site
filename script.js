@@ -102,6 +102,12 @@ const db = firebase.firestore();
                     // Enviar WhatsApp para Leandro
                     enviarWhatsAppLeandro(nome, whatsapp, objetivo, descricao);
                     
+                    // Personalizar mensagem de sucesso com nome do cliente
+                    var successMessage = document.getElementById('success-message');
+                    if (successMessage) {
+                        successMessage.textContent = 'Olá, ' + nome + '! Recebemos seu pedido. O próximo passo é nossa Reunião de Diagnóstico. Clique no botão abaixo para entrar na sala ou aguarde meu contato no WhatsApp.';
+                    }
+                    
                     // Mostrar mensagem de sucesso
                     formSuccess.hidden = false;
                     formOrcamento.reset();
@@ -124,7 +130,7 @@ const db = firebase.firestore();
     if (btnReuniao) {
         btnReuniao.addEventListener("click", function(e) {
             e.preventDefault();
-            // Link do Google Meet (você pode alterar este link)
+            // Link do Google Meet (substitua pelo seu link real)
             var meetingLink = "https://meet.google.com/abc-defg-hij";
             window.open(meetingLink, "_blank");
         });
