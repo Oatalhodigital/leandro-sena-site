@@ -305,6 +305,15 @@
                         <input type="text" name="nome" placeholder="Seu nome completo" required autocomplete="name">
                         <input type="email" name="email" placeholder="Seu melhor e-mail" required autocomplete="email">
                         <input type="tel" name="whatsapp" placeholder="Seu WhatsApp (DDD) 9XXXX-XXXX" required autocomplete="tel">
+                        <select name="objetivo" required aria-label="Objetivo do projeto">
+                            <option value="">Qual seu objetivo?</option>
+                            <option value="estetica">Estética</option>
+                            <option value="design">Design</option>
+                            <option value="comercial">Comercial</option>
+                            <option value="site-pessoal">Site Pessoal</option>
+                            <option value="empresarial">Empresarial</option>
+                            <option value="outros">Outros (descrever abaixo)</option>
+                        </select>
                         <textarea name="descricao" placeholder="Descreva seu projeto/problema em detalhes..." rows="5" required></textarea>
                         <button type="submit" class="btn-submit">Solicitar Orçamento</button>
                     </form>

@@ -63,6 +63,175 @@ a {
     opacity: 1;
 }
 
+/* Header */
+header {
+    background: var(--navy);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.nav-inner {
+    position: relative;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--white);
+    flex-shrink: 0;
+}
+
+.logo-mark {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--white);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.35rem;
+    position: relative;
+    border-radius: 8px;
+}
+
+.logo-mark .l {
+    position: absolute;
+    left: 7px;
+    top: 4px;
+}
+
+.logo-mark .s {
+    position: absolute;
+    right: 7px;
+    bottom: 4px;
+    color: var(--sky);
+}
+
+.logo-text {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+}
+
+.logo-text span {
+    color: var(--sky-soft);
+    margin-left: 2px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 4px 16px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.nav-links li {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.2s, background 0.2s;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    text-align: center;
+    min-width: auto;
+}
+
+.nav-links a:hover {
+    color: var(--sky-soft);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-cta-nav {
+    background: linear-gradient(180deg, var(--sky-soft) 0%, var(--sky) 100%) !important;
+    color: var(--navy) !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    font-size: 0.75rem !important;
+    margin-left: 8px !important;
+    box-shadow: 0 2px 8px rgba(77, 163, 255, 0.3) !important;
+    transition: all 0.2s !important;
+}
+
+.btn-cta-nav:hover {
+    color: var(--navy) !important;
+    filter: brightness(1.08) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(77, 163, 255, 0.4) !important;
+}
+
+.nav-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+.nav-toggle::before,
+.nav-toggle::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    height: 2px;
+    background: #fff;
+    transition: transform 0.25s;
+}
+
+.nav-toggle::before {
+    top: 14px;
+    box-shadow: 0 7px 0 #fff;
+}
+
+.nav-toggle::after {
+    top: 28px;
+}
+
+header.nav-open .nav-toggle::before {
+    top: 21px;
+    box-shadow: none;
+    transform: rotate(45deg);
+}
+
+header.nav-open .nav-toggle::after {
+    top: 21px;
+    transform: rotate(-45deg);
+}
+
 /* Hero */
 .hero {
     position: relative;
@@ -968,6 +1137,23 @@ a {
     font-size: 0.95rem;
     transition: border-color 0.3s, box-shadow 0.3s;
     background: var(--white);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 44px;
+    cursor: pointer;
+}
+
+.contact-form select:hover {
+    border-color: #cbd5e1;
+}
+
+.contact-form select:focus {
+    outline: none;
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.1);
 }
 
 .contact-form input:focus,

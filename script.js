@@ -93,13 +93,14 @@ const db = firebase.firestore();
             var nome = String(formData.get("nome") || "").trim();
             var email = String(formData.get("email") || "").trim();
             var whatsapp = String(formData.get("whatsapp") || "").trim();
+            var objetivo = String(formData.get("objetivo") || "").trim();
             var descricao = String(formData.get("descricao") || "").trim();
 
             // Salvar no Firebase
-            salvarLeadFirebase(nome, email, whatsapp, descricao)
+            salvarLeadFirebase(nome, email, whatsapp, objetivo, descricao)
                 .then(function() {
                     // Enviar WhatsApp para Leandro
-                    enviarWhatsAppLeandro(nome, whatsapp, descricao);
+                    enviarWhatsAppLeandro(nome, whatsapp, objetivo, descricao);
                     
                     // Mostrar mensagem de sucesso
                     formSuccess.hidden = false;
@@ -123,27 +124,29 @@ const db = firebase.firestore();
     if (btnReuniao) {
         btnReuniao.addEventListener("click", function(e) {
             e.preventDefault();
-            // Link fixo do Google Meet (você pode alterar este link)
-            var meetingLink = "https://meet.google.com/xxx-xxxx-xxx";
+            // Link do Google Meet (você pode alterar este link)
+            var meetingLink = "https://meet.google.com/abc-defg-hij";
             window.open(meetingLink, "_blank");
         });
     }
 
     // Função para salvar lead no Firebase
-    function salvarLeadFirebase(nome, email, whatsapp, descricao) {
+    function salvarLeadFirebase(nome, email, whatsapp, objetivo, descricao) {
         var leadData = {
             nome: nome,
             email: email,
             whatsapp: whatsapp,
+            objetivo: objetivo,
             descricao: descricao,
             dataCriacao: firebase.firestore.FieldValue.serverTimestamp(),
             status: "novo",
             origem: "site_leandro_sena"
         };
 
-        return db.collection("leads_projetos").add(leadData)
+        return db.collection("orcamentos").add(leadData)
             .then(function(docRef) {
                 console.log("Lead salvo com ID: ", docRef.id);
+                console.log("Dados salvos:", leadData);
                 return docRef;
             })
             .catch(function(error) {
@@ -153,11 +156,23 @@ const db = firebase.firestore();
     }
 
     // Função para enviar WhatsApp para Leandro
-    function enviarWhatsAppLeandro(nome, whatsapp, descricao) {
+    function enviarWhatsAppLeandro(nome, whatsapp, objetivo, descricao) {
+        // Mapear objetivo para texto legível
+        var objetivoMap = {
+            "estetica": "Estética",
+            "design": "Design", 
+            "comercial": "Comercial",
+            "site-pessoal": "Site Pessoal",
+            "empresarial": "Empresarial",
+            "outros": "Outros"
+        };
+        var objetivoLabel = objetivoMap[objetivo] || objetivo || "Não informado";
+
         var mensagem = "🚀 *Novo Lead Recebido!*\n\n" +
             "👤 *Nome:* " + nome + "\n" +
             "📱 *WhatsApp:* " + whatsapp + "\n" +
-            "📝 *Projeto:* " + descricao + "\n\n" +
+            "🎯 *Objetivo:* " + objetivoLabel + "\n" +
+            "📝 *Problema:* " + descricao + "\n\n" +
             "🔗 *Ação Necessária:* Entrar em contato em até 2 horas\n" +
             "📅 *Próximo Passo:* Agendar reunião de diagnóstico";
 
@@ -167,30 +182,57 @@ const db = firebase.firestore();
         window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     }
 
-    // Validação de telefone (formato brasileiro)
+    // Validação de telefone (formato brasileiro) - Versão simplificada
     var whatsappInput = document.querySelector('input[name="whatsapp"]');
     if (whatsappInput) {
+        // Garantir que o campo está habilitado
+        whatsappInput.disabled = false;
+        whatsappInput.readOnly = false;
+        whatsappInput.removeAttribute('disabled');
+        whatsappInput.removeAttribute('readonly');
+        
         whatsappInput.addEventListener('input', function(e) {
             var value = e.target.value.replace(/\D/g, '');
-            var formattedValue = '';
+            var maxLength = 11;
             
-            if (value.length <= 11) {
-                if (value.length >= 2) {
-                    formattedValue = '(' + value.substring(0, 2);
-                }
-                if (value.length >= 3) {
-                    formattedValue += ') ' + value.substring(2, Math.min(7, value.length));
-                }
-                if (value.length >= 7) {
-                    formattedValue += '-' + value.substring(7, Math.min(11, value.length));
-                }
-                if (value.length > 11) {
-                    formattedValue += value.substring(11);
-                }
+            // Limitar a 11 dígitos
+            if (value.length > maxLength) {
+                value = value.substring(0, maxLength);
             }
             
-            e.target.value = formattedValue;
+            // Aplicar formatação
+            if (value.length > 0) {
+                if (value.length <= 2) {
+                    e.target.value = '(' + value;
+                } else if (value.length <= 6) {
+                    e.target.value = '(' + value.substring(0, 2) + ') ' + value.substring(2);
+                } else if (value.length <= 10) {
+                    e.target.value = '(' + value.substring(0, 2) + ') ' + value.substring(2, 6) + '-' + value.substring(6);
+                } else {
+                    e.target.value = '(' + value.substring(0, 2) + ') ' + value.substring(2, 7) + '-' + value.substring(7, 11);
+                }
+            } else {
+                e.target.value = '';
+            }
         });
+        
+        // Permitir apenas números, backspace, delete, setas
+        whatsappInput.addEventListener('keydown', function(e) {
+            // Permitir: backspace (8), delete (46), tab (9), escape (27), enter (13)
+            // Permitir: setas (37-40), home (36), end (35)
+            if ([8, 9, 13, 27, 46, 37, 38, 39, 40, 36, 35].includes(e.keyCode)) {
+                return;
+            }
+            
+            // Permitir apenas números (48-57) e números do numpad (96-105)
+            if (!((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105))) {
+                e.preventDefault();
+            }
+        });
+        
+        console.log('✅ Campo WhatsApp habilitado e com máscara aplicada');
+    } else {
+        console.log('❌ Campo WhatsApp não encontrado');
     }
 
     // Otimização de performance: Lazy loading para imagens
@@ -216,6 +258,24 @@ const db = firebase.firestore();
     // Adicionar indicador de carregamento para melhor UX
     window.addEventListener('load', function() {
         document.body.classList.add('loaded');
+        
+        // Verificação adicional do campo WhatsApp
+        var whatsappInput = document.querySelector('input[name="whatsapp"]');
+        if (whatsappInput) {
+            console.log('🔍 Verificação do campo WhatsApp:');
+            console.log('- Tipo:', whatsappInput.type);
+            console.log('- Disabled:', whatsappInput.disabled);
+            console.log('- ReadOnly:', whatsappInput.readOnly);
+            console.log('- Required:', whatsappInput.required);
+            
+            // Forçar habilitação
+            whatsappInput.disabled = false;
+            whatsappInput.readOnly = false;
+            whatsappInput.focus();
+            whatsappInput.blur();
+            
+            console.log('✅ Campo WhatsApp verificado e habilitado');
+        }
     });
 
 })();
