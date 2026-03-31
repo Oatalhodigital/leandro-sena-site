@@ -1,4 +1,4 @@
-// Inicialização do Firebase
+  // Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB07tis8vUZzDlaM2GDiROn-xmxXgHdVtQ",
   authDomain: "leandro-sena-web.firebaseapp.com",
@@ -13,7 +13,16 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-(function () {
+(function() {
+    'use strict';
+
+    // Garantir que a página comece no topo imediatamente
+    if (window.location.hash === '' || window.location.hash === '#') {
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        console.log('📍 Forçando scroll para o topo no carregamento');
+    }
+
     // FAQ Accordion
     document.querySelectorAll(".faq-question").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -304,10 +313,16 @@ const db = firebase.firestore();
             // Forçar habilitação
             whatsappInput.disabled = false;
             whatsappInput.readOnly = false;
-            whatsappInput.focus();
-            whatsappInput.blur();
+            whatsappInput.removeAttribute('disabled');
+            whatsappInput.removeAttribute('readonly');
             
             console.log('✅ Campo WhatsApp verificado e habilitado');
+        }
+        
+        // Garantir que a página comece no topo
+        if (window.location.hash === '' || window.location.hash === '#') {
+            window.scrollTo(0, 0);
+            console.log('📍 Página posicionada no topo');
         }
     });
 
