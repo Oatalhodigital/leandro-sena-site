@@ -800,7 +800,7 @@ header.nav-open .nav-toggle::after {
 
 .portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 28px;
 }
 
@@ -1418,6 +1418,10 @@ body.loading::after {
     }
 
     .benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .portfolio-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
