@@ -326,4 +326,55 @@ const db = firebase.firestore();
         }
     });
 
+    // Rastreamento de eventos GA4
+    function trackEvent(eventName, parameters) {
+        if (typeof gtag !== 'undefined') {
+            gtag('event', eventName, parameters);
+            console.log('📊 Evento GA4 rastreado:', eventName, parameters);
+        }
+    }
+
+    // Rastreamento de cliques no WhatsApp
+    document.addEventListener('click', function(e) {
+        var target = e.target.closest('a[href*="wa.me"], a[href*="whatsapp"]');
+        if (target) {
+            trackEvent('contato_whatsapp', {
+                event_category: 'engajamento',
+                event_label: 'whatsapp_click',
+                value: 1
+            });
+        }
+    });
+
+    // Rastreamento de download do catálogo
+    var btnDownloadCatalogo = document.getElementById('btn-download-catalog');
+    if (btnDownloadCatalogo) {
+        btnDownloadCatalogo.addEventListener('click', function() {
+            trackEvent('download_catalogo', {
+                event_category: 'engajamento',
+                event_label: 'catalogo_download',
+                value: 1
+            });
+        });
+    }
+
+    // Rastreamento de visualização do portfólio
+    var portfolioSection = document.getElementById('portfolio');
+    if (portfolioSection) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    trackEvent('view_portfolio', {
+                        event_category: 'navegacao',
+                        event_label: 'portfolio_section_view',
+                        value: 1
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(portfolioSection);
+    }
+
 })();

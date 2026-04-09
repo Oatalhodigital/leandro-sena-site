@@ -1511,6 +1511,16 @@ body.loading::after {
         grid-template-columns: 1fr;
     }
 
+    .catalog-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .catalog-visual {
+        padding: 30px;
+    }
+
     .contact-box {
         grid-template-columns: 1fr;
     }
