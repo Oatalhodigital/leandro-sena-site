@@ -1008,10 +1008,7 @@ header.nav-open .nav-toggle::after {
 }
 
 .contact-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: start;
+    display: block;
     max-width: 1000px;
     margin: 0 auto;
 }
@@ -1199,15 +1196,10 @@ header.nav-open .nav-toggle::after {
     transform: none;
 }
 
-/* Catálogo de Serviços - Placeholder Compacto */
-.catalog-section {
-    padding: 40px 24px;
-    background: var(--bg-light);
-}
-
+/* Catálogo de Serviços - Na Seção de Contato */
 .catalog-placeholder {
     max-width: 400px;
-    margin: 0 auto;
+    margin: 32px auto 0;
 }
 
 .catalog-preview {
